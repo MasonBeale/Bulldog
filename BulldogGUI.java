@@ -5,23 +5,30 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The BulldogGUI class represents the main GUI for the Bulldog dice game.
+ * It allows users to add players, start the game, and interact with the game through a graphical interface.
+ */
 public class BulldogGUI extends JFrame {
-    private JComboBox<String> playerTypeComboBox;
-    private JTextField playerNameField;
-    private JButton addPlayerButton;
-    private JButton startGameButton;
-    private JTextArea gameLogArea;
-    private ArrayList<Player> players;
-    private JPanel playerPanel;
-    private JPanel scorePanel;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
-    private JButton rollButton;
-    private JButton endButton;
-    private JButton returnButton;
-    private Player currentPlayer;
-    private int turnScore;
+    private JComboBox<String> playerTypeComboBox; // Dropdown for selecting player type
+    private JTextField playerNameField; // Text field for entering player names
+    private JButton addPlayerButton; // Button to add a player
+    private JButton startGameButton; // Button to start the game
+    private JTextArea gameLogArea; // Text area for displaying game logs
+    private ArrayList<Player> players; // List of players in the game
+    private JPanel playerPanel; // Panel to display the list of players
+    private JPanel scorePanel; // Panel to display player scores
+    private CardLayout cardLayout; // Layout manager for switching screens
+    private JPanel cardPanel; // Main panel for holding screens
+    private JButton rollButton; // Button to roll the dice
+    private JButton endButton; // Button to end the current turn
+    private JButton returnButton; // Button to return to the start screen
+    private Player currentPlayer; // The player whose turn it is
+    private int turnScore; // The score accumulated during the current turn
 
+    /**
+     * Constructs a new BulldogGUI and initializes the game interface.
+     */
     public BulldogGUI() {
         // Set up the JFrame
         setTitle("Bulldog Game");
@@ -46,6 +53,11 @@ public class BulldogGUI extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Creates the start screen where players can be added and the game can be started.
+     *
+     * @return The start screen panel.
+     */
     private JPanel createStartScreen() {
         JPanel startPanel = new JPanel();
         startPanel.setLayout(new BorderLayout());
@@ -130,6 +142,11 @@ public class BulldogGUI extends JFrame {
         return startPanel;
     }
 
+    /**
+     * Creates the game screen where the game is played.
+     *
+     * @return The game screen panel.
+     */
     private JPanel createGameScreen() {
         JPanel gamePanel = new JPanel();
         gamePanel.setLayout(new BorderLayout());
@@ -221,6 +238,10 @@ public class BulldogGUI extends JFrame {
         return gamePanel;
     }
 
+    /**
+     * Adds a player to the game based on the selected player type and name.
+     * If no name is entered, a default name is assigned.
+     */
     private void addPlayer() {
         String playerType = (String) playerTypeComboBox.getSelectedItem();
         String playerName = playerNameField.getText().trim();
@@ -272,6 +293,9 @@ public class BulldogGUI extends JFrame {
         }
     }
 
+    /**
+     * Starts the game and handles the game logic in a separate thread.
+     */
     private void startGame() {
         // Use a SwingWorker to run the game logic in a separate thread
         SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
@@ -282,7 +306,7 @@ public class BulldogGUI extends JFrame {
                     for (Player player : players) {
                         currentPlayer = player;
                         turnScore = 0;
-    
+
                         // Enable buttons if it's a human player's turn
                         if (player instanceof AiHumanPlayer) {
                             SwingUtilities.invokeLater(() -> {
@@ -290,9 +314,9 @@ public class BulldogGUI extends JFrame {
                                 endButton.setEnabled(true);
                             });
                         }
-    
+
                         publish("\nPlayer " + player.getName() + "'s turn:\n");
-    
+
                         // Handle human player's turn
                         if (player instanceof AiHumanPlayer) {
                             // Wait for the human player to roll or end their turn
@@ -310,25 +334,25 @@ public class BulldogGUI extends JFrame {
                             // Handle AI player's turn
                             int score = player.play();
                             player.setScore(player.getScore() + score);
-                            publish("   Total score: " + player.getScore() + "\n");
+                            publish("   Scored: " + score + " this turn.\n");
                         }
-    
+
                         // Disable buttons after the turn
                         SwingUtilities.invokeLater(() -> {
                             rollButton.setEnabled(false);
                             endButton.setEnabled(false);
                         });
-    
+
                         // Update the score panel
                         updateScorePanel();
-    
+
                         // Add a small pause between turns
                         try {
-                            Thread.sleep(500); // 1-second pause
+                            Thread.sleep(500); // 0.5-second pause
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-    
+
                         if (player.getScore() >= 104) {
                             publish("\nPlayer " + player.getName() + " wins with a score of " + player.getScore() + "!\n");
                             gameOver = true;
@@ -341,7 +365,7 @@ public class BulldogGUI extends JFrame {
                 }
                 return null;
             }
-    
+
             @Override
             protected void process(List<String> chunks) {
                 // Update the game log area in real time
@@ -350,10 +374,13 @@ public class BulldogGUI extends JFrame {
                 }
             }
         };
-    
+
         worker.execute();
     }
 
+    /**
+     * Handles the roll action for the current player.
+     */
     private void handleRoll() {
         int roll = (int) (Math.random() * 6 + 1);
         gameLogArea.append("   Player " + currentPlayer.getName() + " rolled a " + roll + "\n");
@@ -369,13 +396,19 @@ public class BulldogGUI extends JFrame {
         }
     }
 
+    /**
+     * Handles the end turn action for the current player.
+     */
     private void handleEndTurn() {
-        gameLogArea.append("   Turn ended. Score for this turn: " + turnScore + "\n");
+        gameLogArea.append("   Turn ended. Scored: " + turnScore + " this turn.\n");
         currentPlayer.setScore(currentPlayer.getScore() + turnScore);
         updateScorePanel();
         turnScore = -1; // Signal to end the turn
     }
 
+    /**
+     * Updates the score panel with the current scores of all players.
+     */
     private void updateScorePanel() {
         // Clear the score panel and re-add updated scores
         scorePanel.removeAll();
@@ -388,6 +421,9 @@ public class BulldogGUI extends JFrame {
         scorePanel.repaint();
     }
 
+    /**
+     * Resets the game to its initial state.
+     */
     private void resetGame() {
         players.clear();
         playerPanel.removeAll();
@@ -400,6 +436,11 @@ public class BulldogGUI extends JFrame {
         returnButton.setEnabled(false); // Disable the return button after reset
     }
 
+    /**
+     * The main method to launch the Bulldog game GUI.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         // Run the GUI on the Event Dispatch Thread
         SwingUtilities.invokeLater(new Runnable() {
