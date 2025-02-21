@@ -1,31 +1,52 @@
-import java.util.Scanner;
+import javax.swing.*;
 
 public class AiHumanPlayer extends Player {
-
-    public AiHumanPlayer(String name) {
+    private JFrame parentFrame;
+    
+    public AiHumanPlayer(String name, JFrame parentFrame) {
         super(name);
+        this.parentFrame = parentFrame;
     }
 
     @Override
     public int play() {
-        Scanner scanner = new Scanner(System.in);
         int turnScore = 0;
         while (true) {
             int roll = (int) (Math.random() * 6 + 1);
-            System.out.println("   Player " + getName() + " rolled a " + roll);
+            String message = "Player " + getName() + " rolled a " + roll + "\n";
             if (roll == 6) {
-                System.out.println("   Rolled a 6! Turn over. Score for this turn: 0");
+                message += "Rolled a 6! Turn over. Score for this turn: 0";
+                showDialog(message, "Turn Over", JOptionPane.INFORMATION_MESSAGE);
                 return 0;
             } else {
                 turnScore += roll;
-                System.out.println("   Current turn score: " + turnScore);
-                System.out.print("   Continue rolling? (y/n): ");
-                String input = scanner.nextLine().trim().toLowerCase();
-                if (input.equals("n")) {
-                    System.out.println("   Turn ended. Score for this turn: " + turnScore);
+                message += "Current turn score: " + turnScore + "\n";
+                int choice = showConfirmDialog(message + "Continue rolling?", "Continue?", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.NO_OPTION) {
+                    message = "Turn ended. Score for this turn: " + turnScore;
+                    showDialog(message, "Turn Ended", JOptionPane.INFORMATION_MESSAGE);
                     return turnScore;
                 }
             }
         }
+    }
+
+    private void showDialog(String message, String title, int messageType) {
+        JOptionPane pane = new JOptionPane(message, messageType);
+        JDialog dialog = pane.createDialog(parentFrame, title);
+        dialog.setLocation(parentFrame.getX() + parentFrame.getWidth(), parentFrame.getY()); // Position on the right
+        dialog.setVisible(true);
+    }
+
+    private int showConfirmDialog(String message, String title, int optionType) {
+        JOptionPane pane = new JOptionPane(message, JOptionPane.QUESTION_MESSAGE, optionType);
+        JDialog dialog = pane.createDialog(parentFrame, title);
+        dialog.setLocation(parentFrame.getX() + parentFrame.getWidth(), parentFrame.getY()); // Position on the right
+        dialog.setVisible(true);
+        Object selectedValue = pane.getValue();
+        if (selectedValue instanceof Integer) {
+            return (Integer) selectedValue;
+        }
+        return JOptionPane.CLOSED_OPTION;
     }
 }
