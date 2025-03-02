@@ -18,7 +18,7 @@ public class BoldPlayer extends Player {
 	/*   none                                               */
 	/********************************************************/
 	public BoldPlayer () {
-		this("Bold", 104);
+		this("Bold", 104); // Default winning score (can be overridden)
 	}
 
 	/********************************************************/
