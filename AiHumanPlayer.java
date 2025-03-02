@@ -1,52 +1,32 @@
 import javax.swing.*;
 
 public class AiHumanPlayer extends Player {
-    private JFrame parentFrame;
-    
-    public AiHumanPlayer(String name, JFrame parentFrame) {
+    private final Dice dice; // Dice object for rolling
+    private BulldogGUI gui; // Reference to the BulldogGUI for updating the game state
+
+    public AiHumanPlayer(String name, JFrame parentFrame, BulldogGUI gui) {
         super(name);
-        this.parentFrame = parentFrame;
+        this.dice = new Dice(6); // Standard 6-sided die
+        this.gui = gui; // Initialize the reference to BulldogGUI
     }
 
+    /**
+     * Handles the roll action for the human player.
+     * Updates the game log and turn score in the BulldogGUI.
+     */
     @Override
     public int play() {
-        int turnScore = 0;
-        while (true) {
-            int roll = (int) (Math.random() * 6 + 1);
-            String message = "Player " + getName() + " rolled a " + roll + "\n";
-            if (roll == 6) {
-                message += "Rolled a 6! Turn over. Score for this turn: 0";
-                showDialog(message, "Turn Over", JOptionPane.INFORMATION_MESSAGE);
-                return 0;
-            } else {
-                turnScore += roll;
-                message += "Current turn score: " + turnScore + "\n";
-                int choice = showConfirmDialog(message + "Continue rolling?", "Continue?", JOptionPane.YES_NO_OPTION);
-                if (choice == JOptionPane.NO_OPTION) {
-                    message = "Turn ended. Score for this turn: " + turnScore;
-                    showDialog(message, "Turn Ended", JOptionPane.INFORMATION_MESSAGE);
-                    return turnScore;
-                }
-            }
+        int roll = dice.roll(); // Use the Dice object to roll
+        gui.appendToGameLog("   Player " + getName() + " rolled a " + roll + "\n");
+        if (roll == 6) {
+            gui.appendToGameLog("   Rolled a 6! Turn over. Score for this turn: 0\n");
+            gui.setTurnScore(0); // Reset turn score
+            gui.endTurn(); // Signal to end the turn
+        } else {
+            int newTurnScore = gui.getTurnScore() + roll;
+            gui.setTurnScore(newTurnScore); // Update turn score
+            gui.appendToGameLog("   Current turn score: " + newTurnScore + "\n");
         }
-    }
-
-    private void showDialog(String message, String title, int messageType) {
-        JOptionPane pane = new JOptionPane(message, messageType);
-        JDialog dialog = pane.createDialog(parentFrame, title);
-        dialog.setLocation(parentFrame.getX() + parentFrame.getWidth(), parentFrame.getY()); // Position on the right
-        dialog.setVisible(true);
-    }
-
-    private int showConfirmDialog(String message, String title, int optionType) {
-        JOptionPane pane = new JOptionPane(message, JOptionPane.QUESTION_MESSAGE, optionType);
-        JDialog dialog = pane.createDialog(parentFrame, title);
-        dialog.setLocation(parentFrame.getX() + parentFrame.getWidth(), parentFrame.getY()); // Position on the right
-        dialog.setVisible(true);
-        Object selectedValue = pane.getValue();
-        if (selectedValue instanceof Integer) {
-            return (Integer) selectedValue;
-        }
-        return JOptionPane.CLOSED_OPTION;
+        return gui.getTurnScore();
     }
 }

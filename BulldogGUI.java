@@ -256,7 +256,7 @@ public class BulldogGUI extends JFrame {
         Player player = null;
         switch (playerType) {
             case "AiHumanPlayer":
-                player = new AiHumanPlayer(playerName, this); // Pass 'this' as the parent frame
+                player = new AiHumanPlayer(playerName, this, this); // Pass 'this' as the parent frame and BulldogGUI
                 break;
             case "AiRandomPlayer":
                 player = new AiRandomPlayer(playerName);
@@ -384,17 +384,8 @@ public class BulldogGUI extends JFrame {
      * Handles the roll action for the current player.
      */
     private void handleRoll() {
-        int roll = (int) (Math.random() * 6 + 1);
-        gameLogArea.append("   Player " + currentPlayer.getName() + " rolled a " + roll + "\n");
-        if (roll == 6) {
-            gameLogArea.append("   Rolled a 6! Turn over. Score for this turn: 0\n");
-            turnScore = 0;
-            currentPlayer.setScore(currentPlayer.getScore() + turnScore);
-            updateScorePanel();
-            turnScore = -1; // Signal to end the turn
-        } else {
-            turnScore += roll;
-            gameLogArea.append("   Current turn score: " + turnScore + "\n");
+        if (currentPlayer instanceof AiHumanPlayer) {
+            ((AiHumanPlayer) currentPlayer).play(); // Delegate roll handling to AiHumanPlayer
         }
     }
 
@@ -436,6 +427,40 @@ public class BulldogGUI extends JFrame {
         scorePanel.repaint();
         gameLogArea.setText("");
         returnButton.setEnabled(false); // Disable the return button after reset
+    }
+
+    /**
+     * Appends a message to the game log area.
+     *
+     * @param message The message to append.
+     */
+    public void appendToGameLog(String message) {
+        gameLogArea.append(message);
+    }
+
+    /**
+     * Sets the turn score.
+     *
+     * @param score The new turn score.
+     */
+    public void setTurnScore(int score) {
+        this.turnScore = score;
+    }
+
+    /**
+     * Gets the current turn score.
+     *
+     * @return The current turn score.
+     */
+    public int getTurnScore() {
+        return turnScore;
+    }
+
+    /**
+     * Signals the end of the current turn.
+     */
+    public void endTurn() {
+        turnScore = -1; // Signal to end the turn
     }
 
     /**

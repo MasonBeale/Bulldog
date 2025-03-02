@@ -1,14 +1,16 @@
 public class AiRandomPlayer extends Player {
+    private final Dice dice; // Dice object for rolling
 
     public AiRandomPlayer(String name) {
         super(name);
+        this.dice = new Dice(6); // Standard 6-sided die
     }
 
     @Override
     public int play() {
         int turnScore = 0;
         while (true) {
-            int roll = (int) (Math.random() * 6 + 1);
+            int roll = dice.roll(); // Use the Dice object to roll
             System.out.println("   Player " + getName() + " rolled a " + roll);
             if (roll == 6) {
                 System.out.println("   Rolled a 6! Turn over. Score for this turn: 0");
