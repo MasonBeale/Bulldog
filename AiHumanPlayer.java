@@ -1,9 +1,20 @@
 import javax.swing.*;
 
+/**
+ * The AiHumanPlayer class represents a human-controlled player in the game.
+ * This player interacts with the game through a graphical user interface (GUI).
+ */
 public class AiHumanPlayer extends Player {
     private final Dice dice; // Dice object for rolling
     private BulldogGUI gui; // Reference to the BulldogGUI for updating the game state
 
+    /**
+     * Constructor for the AiHumanPlayer class.
+     *
+     * @param name        The name of the player.
+     * @param parentFrame The parent JFrame for the GUI.
+     * @param gui         The BulldogGUI instance for updating the game state.
+     */
     public AiHumanPlayer(String name, JFrame parentFrame, BulldogGUI gui) {
         super(name);
         this.dice = new Dice(6); // Standard 6-sided die
@@ -11,8 +22,9 @@ public class AiHumanPlayer extends Player {
     }
 
     /**
-     * Handles the roll action for the human player.
-     * Updates the game log and turn score in the BulldogGUI.
+     * Handles the roll action for the human player. Updates the game log and turn score in the BulldogGUI.
+     *
+     * @return The current turn score after rolling the dice.
      */
     @Override
     public int play() {

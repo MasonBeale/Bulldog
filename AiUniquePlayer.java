@@ -1,11 +1,26 @@
+/**
+ * The AiUniquePlayer class represents an AI player that ends their turn when the turn score
+ * is a multiple of 10. If the player rolls a 6, the turn ends with a score of 0.
+ */
 public class AiUniquePlayer extends Player {
     private final Dice dice; // Dice object for rolling
 
+    /**
+     * Constructor for the AiUniquePlayer class.
+     *
+     * @param name The name of the player.
+     */
     public AiUniquePlayer(String name) {
         super(name);
         this.dice = new Dice(6); // Standard 6-sided die
     }
 
+    /**
+     * Simulates the player's turn. The player rolls the dice and continues rolling until
+     * the turn score is a multiple of 10 or a 6 is rolled.
+     *
+     * @return The score accumulated during the turn.
+     */
     @Override
     public int play() {
         int turnScore = 0;
