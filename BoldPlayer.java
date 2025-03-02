@@ -4,10 +4,12 @@
 /* COS 420, Spring 2025                                 */
 /* BUlldog Part 1                                       */
 /* BoldPlayer class: extends Player class               */
-/*          A BoldPlayer stops if they win (score 104)  */
+/*          A BoldPlayer stops if they win              */
+/*          (surpassing winning score)                  */
 /********************************************************/
 
 public class BoldPlayer extends Player {
+    private int winningScore; // Winning score passed from BulldogGUI
 
 	/********************************************************/
 	/* Constructor: BoldPlayer                              */
@@ -16,7 +18,7 @@ public class BoldPlayer extends Player {
 	/*   none                                               */
 	/********************************************************/
 	public BoldPlayer () {
-		this("Bold");
+		this("Bold", 104);
 	}
 
 	/********************************************************/
@@ -25,15 +27,16 @@ public class BoldPlayer extends Player {
 	/* Parameters:                                          */
 	/*   String name:  the name of the Player being created */
 	/********************************************************/
-	public BoldPlayer (String name) {
+	public BoldPlayer (String name, int winningScore) {
 		super(name);
+        this.winningScore = winningScore; // Set the winning score
 	}
 
 	/********************************************************/
 	/* Method:  play                                        */
 	/* Purpose: Take one turn for this Player               */
 	/*          One turn for a BoldPlayer is                */
-    /*          ended when score is 15 or above             */
+    /*          ended when they win or roll a 6             */
 	/* Parameters:                                          */
 	/*   none                                               */
 	/* Returns:                                             */
@@ -48,7 +51,7 @@ public class BoldPlayer extends Player {
             System.out.println("   Player " + getName() + " rolled " + roll );
             if (roll != 6) {
                 total = total + roll;
-                if (total < 104) {
+                if (total < winningScore) { // Use the winning score from BulldogGUI
                     System.out.println("   Total is " + total + ". Rolling Again.");
                 }else{
                     System.out.println("   Total is " + total + ".");
@@ -64,19 +67,5 @@ public class BoldPlayer extends Player {
         System.out.println("   Player " + getName() + " scored " + total + " for their turn");
 		return total;
 	}
-
-    public static void main(String[] args){
-        BoldPlayer play = new BoldPlayer();
-        int numGames = 0;
-        boolean win = false;
-        while(!win){
-            numGames++;
-            if (play.play() >= 104){
-                win = true;
-            }
-        }
-        System.out.println("Took "+ numGames + " games to win.");
-        
-    }
 }
 

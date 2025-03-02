@@ -10,6 +10,8 @@ import java.util.List;
  * It allows users to add players, start the game, and interact with the game through a graphical interface.
  */
 public class BulldogGUI extends JFrame {
+    private static final int WINNING_SCORE = 104; // Constant for the winning score
+
     private JComboBox<String> playerTypeComboBox; // Dropdown for selecting player type
     private JTextField playerNameField; // Text field for entering player names
     private JButton addPlayerButton; // Button to add a player
@@ -269,7 +271,7 @@ public class BulldogGUI extends JFrame {
                 player = new WimpPlayer(playerName);
                 break;
             case "BoldPlayer":
-                player = new BoldPlayer(playerName);
+                player = new BoldPlayer(playerName, WINNING_SCORE);
                 break;
         }
 
@@ -353,7 +355,7 @@ public class BulldogGUI extends JFrame {
                             e.printStackTrace();
                         }
 
-                        if (player.getScore() >= 104) {
+                        if (player.getScore() >= WINNING_SCORE) {
                             publish("\nPlayer " + player.getName() + " wins with a score of " + player.getScore() + "!\n");
                             gameOver = true;
                             SwingUtilities.invokeLater(() -> {
