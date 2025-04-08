@@ -1,71 +1,45 @@
-/********************************************************/
-/* Mason Beale                                          */
-/* Login ID: mason.beale@maine.edu                      */
-/* COS 420, Spring 2025                                 */
-/* BUlldog Part 1                                       */
-/* HumanPlayer class: extends Player class              */
-/*          A HumanPlayer takes input from the user     */
-/********************************************************/
-import java.util.*;
+import javax.swing.*;
 
+/**
+ * The AiHumanPlayer class represents a human-controlled player in the game.
+ * This player interacts with the game through a graphical user interface (GUI).
+ */
 public class HumanPlayer extends Player {
+    private final Dice dice; // Dice object for rolling
+    private Bulldog game; // Reference to the Bulldog for updating the game state
 
-	/********************************************************/
-	/* Constructor: HumanPlayer                             */
-	/* Purpose: Create a default HumanPlayer                */
-	/* Parameters:                                          */
-	/*   none                                               */
-	/********************************************************/
-	public HumanPlayer () {
-		this("Human");
-	}
+    /**
+     * Constructor for the AiHumanPlayer class.
+     *
+     * @param name        The name of the player.
+     * @param parentFrame The parent JFrame for the GUI.
+     * @param game         The Bulldog instance for updating the game state.
+     */
+    public HumanPlayer(String name, JFrame parentFrame, Bulldog game) {
+        super(name);
+        this.dice = new Dice(6); // Standard 6-sided die
+        this.game = game; // Initialize the reference to Bulldog
+    }
 
-	/********************************************************/
-	/* Constructor: HumanPlayer                             */
-	/* Purpose: Create a new HumanPlayer object             */
-	/* Parameters:                                          */
-	/*   String name:  the name of the Player being created */
-	/********************************************************/
-	public HumanPlayer (String name) {
-		super(name);
-	}
-
-	/********************************************************/
-	/* Method:  play                                        */
-	/* Purpose: Take one turn for this Player               */
-	/*          One turn for a HumanPlayer is               */
-    /*          determined by user inputs                   */
-	/* Parameters:                                          */
-	/*   none                                               */
-	/* Returns:                                             */
-	/*   the score earned by the player on this turn,       */
-	/*       which will be zero if a six was rolled         */
-	/********************************************************/
-	public int play() {
-        Scanner s = new Scanner(System.in);
-        int total = 0;
-        String answer = "y";
-        while (answer.equals("y")) {
-            int roll = (int) (Math.random()*6 + 1);
-            System.out.println("   Player " + getName() + " rolled " + roll );
-            if (roll != 6) {
-                total = total + roll;
-                System.out.print("   Total is " + total + ".\n   Roll again? (y/n): ");
-                answer = s.nextLine();
-            } else {
-                answer = "n";
-                total = 0;
-                System.out.println("   and scored 0 for the turn.");
-                return total;
-            }  
+    /**
+     * Handles the roll action for the human player. Updates the game log and turn score in the Bulldog.
+     *
+     * @return The current turn score after rolling the dice.
+     */
+    @Override
+    public int play() {
+        int roll = dice.roll();
+        game.appendToGameLog("   Player " + getName() + " rolled a " + roll + "\n");
+        if (roll == 6) {
+            game.appendToGameLog("   Rolled a 6! Turn over. Score for this turn: 0\n");
+            game.setTurnScore(0); // Reset turn score
+            game.endTurn(); // Signal to end the turn
+            return 0; // Explicitly return 0 when a 6 is rolled
+        } else {
+            int newTurnScore = game.getTurnScore() + roll;
+            game.setTurnScore(newTurnScore); // Update turn score
+            game.appendToGameLog("   Current turn score: " + newTurnScore + "\n");
+            return newTurnScore;
         }
-        System.out.println("   Player " + getName() + " scored " + total + " for their turn");
-		return total;
-	}
-
-    public static void main(String[] args){
-        HumanPlayer play = new HumanPlayer();
-        play.play();
     }
 }
-

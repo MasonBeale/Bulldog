@@ -1,70 +1,44 @@
-/********************************************************/
-/* Mason Beale                                          */
-/* Login ID: mason.beale@maine.edu                      */
-/* COS 420, Spring 2025                                 */
-/* BUlldog Part 1                                       */
-/* FifteenPlayer class: extends Player class            */
-/*          A FifteenPlayer stops when scoring above 15 */
-/********************************************************/
-
+/**
+ * The AiFifteenPlayer class represents an AI player that aims to reach a score of 15 in each turn.
+ * If the player rolls a 6, the turn ends with a score of 0. Otherwise, the player continues rolling
+ * until the turn score reaches at least 15.
+ */
 public class FifteenPlayer extends Player {
+    private final Dice dice; // Dice object for rolling
 
-	/********************************************************/
-	/* Constructor: FifteenPlayer                           */
-	/* Purpose: Create a default FifteenPlayer              */
-	/* Parameters:                                          */
-	/*   none                                               */
-	/********************************************************/
-	public FifteenPlayer () {
-		this("Fifteen");
-	}
+    /**
+     * Constructor for the AiFifteenPlayer class.
+     *
+     * @param name The name of the player.
+     */
+    public FifteenPlayer(String name) {
+        super(name);
+        this.dice = new Dice(6); // Standard 6-sided die
+    }
 
-	/********************************************************/
-	/* Constructor: FifteenPlayer                           */
-	/* Purpose: Create a new FifteenPlayer object           */
-	/* Parameters:                                          */
-	/*   String name:  the name of the Player being created */
-	/********************************************************/
-	public FifteenPlayer (String name) {
-		super(name);
-	}
-
-	/********************************************************/
-	/* Method:  play                                        */
-	/* Purpose: Take one turn for this Player               */
-	/*          One turn for a FifteenPlayer is             */
-    /*          ended when score is 15 or above             */
-	/* Parameters:                                          */
-	/*   none                                               */
-	/* Returns:                                             */
-	/*   the score earned by the player on this turn,       */
-	/*       which will be zero if a six was rolled         */
-	/********************************************************/
-	public int play() {
-        int total = 0;
-        while (total <= 15) {
-            int roll = (int) (Math.random()*6 + 1);
-            System.out.println("   Player " + getName() + " rolled " + roll );
-            if (roll != 6) {
-                total = total + roll;
-                if (total <= 15) {
-                    System.out.println("   Total is " + total + ". Rolling Again.");
-                }else{
-                    System.out.println("   Total is " + total + ".");
-                }
+    /**
+     * Simulates the player's turn. The player rolls the dice and continues rolling until
+     * they either roll a 6 (ending the turn with a score of 0) or reach a turn score of at least 15.
+     *
+     * @return The score accumulated during the turn.
+     */
+    @Override
+    public int play() {
+        int turnScore = 0;
+        while (true) {
+            int roll = dice.roll(); // Use the Dice object to roll
+            System.out.println("   Player " + getName() + " rolled a " + roll);
+            if (roll == 6) {
+                System.out.println("   Rolled a 6! Turn over. Score for this turn: 0");
+                return 0;
             } else {
-                total = 0;
-                System.out.println("   and scored 0 for the turn.");
-                return total;
-            }  
+                turnScore += roll;
+                System.out.println("   Current turn score: " + turnScore);
+                if (turnScore >= 15) {
+                    System.out.println("   Reached 15 points. Ending turn. Score for this turn: " + turnScore);
+                    return turnScore;
+                }
+            }
         }
-        System.out.println("   Player " + getName() + " scored " + total + " for their turn");
-		return total;
-	}
-
-    public static void main(String[] args){
-        FifteenPlayer play = new FifteenPlayer();
-        play.play();
     }
 }
-

@@ -8,7 +8,7 @@ import java.util.List;
  * The BulldogGUI class represents the main GUI for the Bulldog dice game.
  * It allows users to add players, start the game, and interact with the game through a graphical interface.
  */
-public class BulldogMVC extends JFrame implements PlayerListListener {
+public class Bulldog extends JFrame implements PlayerListListener {
     private static final int WINNING_SCORE = 104; // Constant for the winning score
 
     private JComboBox<String> playerTypeComboBox;
@@ -27,7 +27,7 @@ public class BulldogMVC extends JFrame implements PlayerListListener {
     private Player currentPlayer;
     private int turnScore;
 
-    public BulldogMVC() {
+    public Bulldog() {
         setTitle("Bulldog Game");
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -119,7 +119,7 @@ public class BulldogMVC extends JFrame implements PlayerListListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (players.getPlayerCount() == 0) {
-                    JOptionPane.showMessageDialog(BulldogMVC.this, "Please add at least one player.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(Bulldog.this, "Please add at least one player.", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     cardLayout.show(cardPanel, "GameScreen");
                     startGame();
@@ -245,16 +245,16 @@ public class BulldogMVC extends JFrame implements PlayerListListener {
         Player player = null;
         switch (playerType) {
             case "AiHumanPlayer":
-                player = new AiHumanPlayerMVC(playerName, this, this); // Pass 'this' as the parent frame and BulldogGUI
+                player = new HumanPlayer(playerName, this, this); // Pass 'this' as the parent frame and BulldogGUI
                 break;
             case "AiRandomPlayer":
-                player = new AiRandomPlayer(playerName);
+                player = new RandomPlayer(playerName);
                 break;
             case "AiFifteenPlayer":
-                player = new AiFifteenPlayer(playerName);
+                player = new FifteenPlayer(playerName);
                 break;
             case "AiUniquePlayer":
-                player = new AiUniquePlayer(playerName);
+                player = new UniquePlayer(playerName);
                 break;
             case "WimpPlayer":
                 player = new WimpPlayer(playerName);
@@ -301,7 +301,7 @@ public class BulldogMVC extends JFrame implements PlayerListListener {
                         turnScore = 0;
 
                         // Enable buttons if it's a human player's turn
-                        if (currentPlayer instanceof AiHumanPlayerMVC) {
+                        if (currentPlayer instanceof HumanPlayer) {
                             SwingUtilities.invokeLater(() -> {
                                 rollButton.setEnabled(true);
                                 endButton.setEnabled(true);
@@ -311,7 +311,7 @@ public class BulldogMVC extends JFrame implements PlayerListListener {
                         publish("\nPlayer " + currentPlayer.getName() + "'s turn:\n");
 
                         // Handle human player's turn
-                        if (currentPlayer instanceof AiHumanPlayerMVC) {
+                        if (currentPlayer instanceof HumanPlayer) {
                             // Wait for the human player to roll or end their turn
                             while (true) {
                                 try {
@@ -374,8 +374,8 @@ public class BulldogMVC extends JFrame implements PlayerListListener {
      * Handles the roll action for the current player.
      */
     private void handleRoll() {
-        if (currentPlayer instanceof AiHumanPlayerMVC) {
-            ((AiHumanPlayerMVC) currentPlayer).play(); // Delegate roll handling to AiHumanPlayer
+        if (currentPlayer instanceof HumanPlayer) {
+            ((HumanPlayer) currentPlayer).play(); // Delegate roll handling to AiHumanPlayer
         }
     }
 
@@ -452,7 +452,7 @@ public class BulldogMVC extends JFrame implements PlayerListListener {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new BulldogMVC();
+                new Bulldog();
             }
         });
     }

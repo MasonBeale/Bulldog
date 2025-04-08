@@ -1,75 +1,44 @@
-/********************************************************/
-/* Mason Beale                                          */
-/* Login ID: mason.beale@maine.edu                      */
-/* COS 420, Spring 2025                                 */
-/* BUlldog Part 1                                       */
-/* RandomPlayer class: extends Player class             */
-/*          A RandomPlayer uses 50/50 odds for play     */
-/********************************************************/
-import java.util.*;
-
+/**
+ * The AiRandomPlayer class represents an AI player that randomly decides whether to continue rolling
+ * after each roll. If the player rolls a 6, the turn ends with a score of 0.
+ */
 public class RandomPlayer extends Player {
+    private final Dice dice; // Dice object for rolling
 
-	/********************************************************/
-	/* Constructor: RandomPlayer                            */
-	/* Purpose: Create a default RandomPlayer               */
-	/* Parameters:                                          */
-	/*   none                                               */
-	/********************************************************/
-	public RandomPlayer () {
-		this("Random");
-	}
+    /**
+     * Constructor for the AiRandomPlayer class.
+     *
+     * @param name The name of the player.
+     */
+    public RandomPlayer(String name) {
+        super(name);
+        this.dice = new Dice(6); // Standard 6-sided die
+    }
 
-	/********************************************************/
-	/* Constructor: RandomPlayer                            */
-	/* Purpose: Create a new RandomPlayer object            */
-	/* Parameters:                                          */
-	/*   String name:  the name of the Player being created */
-	/********************************************************/
-	public RandomPlayer (String name) {
-		super(name);
-	}
-
-	/********************************************************/
-	/* Method:  play                                        */
-	/* Purpose: Take one turn for this Player               */
-	/*          One turn for a RandomPlayer is              */
-    /*          determined by 50/50 odds every roll         */
-	/* Parameters:                                          */
-	/*   none                                               */
-	/* Returns:                                             */
-	/*   the score earned by the player on this turn,       */
-	/*       which will be zero if a six was rolled         */
-	/********************************************************/
-	public int play() {
-        Random r = new Random();
-        int total = 0;
-        boolean playAgain = true;
-        while (playAgain) {
-            int roll = (int) (Math.random()*6 + 1);
-            System.out.println("   Player " + getName() + " rolled " + roll );
-            if (roll != 6) {
-                total = total + roll;
-                playAgain = r.nextBoolean();
-                System.out.println("   Total is " + total + ".   Rolling again: "+ playAgain);
+    /**
+     * Simulates the player's turn. The player rolls the dice and randomly decides whether to continue
+     * rolling or end the turn. If the player rolls a 6, the turn ends with a score of 0.
+     *
+     * @return The score accumulated during the turn.
+     */
+    @Override
+    public int play() {
+        int turnScore = 0;
+        while (true) {
+            int roll = dice.roll(); // Use the Dice object to roll
+            System.out.println("   Player " + getName() + " rolled a " + roll);
+            if (roll == 6) {
+                System.out.println("   Rolled a 6! Turn over. Score for this turn: 0");
+                return 0;
             } else {
-                total = 0;
-                System.out.println("   and scored 0 for the turn.");
-                return total;
-            }  
-        }
-
-        System.out.println("   Player " + getName() + " scored " + total + " for their turn");
-		return total;
-	}
-
-    public static void main(String[] args){
-        RandomPlayer play = new RandomPlayer();
-        play.play();
-        Random r = new Random();
-        for(int i = 0; i < 10; i++){
-            System.out.println(r.nextBoolean());
+                turnScore += roll;
+                System.out.println("   Current turn score: " + turnScore);
+                boolean continueRolling = Math.random() < 0.5;
+                if (!continueRolling) {
+                    System.out.println("   Randomly chose to end turn. Score for this turn: " + turnScore);
+                    return turnScore;
+                }
+            }
         }
     }
 }
-
