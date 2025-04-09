@@ -4,6 +4,7 @@ import java.util.Random;
 /**
  * The Dice class represents a dice with a specified number of sides.
  * It extends RandomDice and provides secure random number generation.
+ * @author Mason Beale with DeepSeek
  */
 public class Dice extends RandomDice {
     private static final Random random = new SecureRandom(); // Singleton Random instance

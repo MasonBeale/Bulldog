@@ -1,15 +1,16 @@
 import javax.swing.*;
 
 /**
- * The AiHumanPlayer class represents a human-controlled player in the game.
+ * The HumanPlayer class represents a human-controlled player in the game.
  * This player interacts with the game through a graphical user interface (GUI).
+ * @author Mason Beale with DeepSeek
  */
 public class HumanPlayer extends Player {
     private final RandomDice dice; // Dice object for rolling
     private Bulldog game; // Reference to the Bulldog for updating the game state
 
     /**
-     * Constructor for the AiHumanPlayer class.
+     * Constructor for the HumanPlayer class.
      *
      * @param name        The name of the player.
      * @param parentFrame The parent JFrame for the GUI.

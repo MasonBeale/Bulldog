@@ -2,6 +2,7 @@
  * The FifteenPlayer class represents an AI player that aims to reach a score of 15 in each turn.
  * If the player rolls a 6, the turn ends with a score of 0. Otherwise, the player continues rolling
  * until the turn score reaches at least 15.
+ * @author Mason Beale with DeepSeek
  */
 public class FifteenPlayer extends Player {
     private final RandomDice dice; // Dice object for rolling

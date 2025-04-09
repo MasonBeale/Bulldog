@@ -1,12 +1,13 @@
 /**
- * The AiUniquePlayer class represents an AI player that ends their turn when the turn score
+ * The UniquePlayer class represents an AI player that ends their turn when the turn score
  * is a multiple of 10. If the player rolls a 6, the turn ends with a score of 0.
+ * @author Mason Beale with DeepSeek
  */
 public class UniquePlayer extends Player {
     private final RandomDice dice; // Dice object for rolling
 
     /**
-     * Constructor for the AiUniquePlayer class.
+     * Constructor for the UniquePlayer class.
      *
      * @param name The name of the player.
      */

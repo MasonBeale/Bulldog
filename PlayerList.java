@@ -5,6 +5,7 @@ import java.util.List;
  * A class that encapsulates and manages a list of Player objects.
  * Provides methods to add, retrieve, and modify player information,
  * and supports the Model-View-Controller pattern through listener notifications.
+ * @author Mason Beale with DeepSeek
  */
 public class PlayerList {
     /** The list of players maintained by this class */

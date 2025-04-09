@@ -1,6 +1,7 @@
 /**
  * The AiRandomPlayer class represents an AI player that randomly decides whether to continue rolling
  * after each roll. If the player rolls a 6, the turn ends with a score of 0.
+ * @author Mason Beale with DeepSeek
  */
 public class RandomPlayer extends Player {
     private final RandomDice dice; // Dice object for rolling

@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * A viewer class that displays player scores in a scoreboard format.
  * Implements PlayerListListener to receive updates when the player data changes.
+ * @author Mason Beale with DeepSeek
  */
 public class Scoreboard extends JPanel implements PlayerListListener {
     private PlayerList playerList;

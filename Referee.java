@@ -1,6 +1,6 @@
-// Referee.java
 /**
  * The Referee class manages the game logic for Bulldog and is implemented as a Singleton.
+ * @author Mason Beale with DeepSeek
  */
 public class Referee {
     private int winningScore;

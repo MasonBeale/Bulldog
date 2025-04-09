@@ -1,6 +1,7 @@
 /**
  * The BoldPlayer class represents an AI player that continues rolling until they reach the winning score
  * or roll a 6. If a 6 is rolled, the turn ends with a score of 0.
+ * @author Mason Beale with DeepSeek
  */
 public class BoldPlayer extends Player {
     private final RandomDice dice; // Dice object for rolling

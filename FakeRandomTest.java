@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Tests for the FakeRandom class
+ * @author Mason Beale with DeepSeek
  */
 public class FakeRandomTest {
     

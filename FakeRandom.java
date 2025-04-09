@@ -5,6 +5,7 @@ import java.util.Iterator;
 /**
  * A deterministic implementation of RandomDice that uses a predefined sequence of numbers.
  * The sequence automatically repeats when exhausted.
+ * @author Mason Beale with DeepSeek
  */
 public class FakeRandom extends RandomDice {
     private Iterator<Integer> numberStream;

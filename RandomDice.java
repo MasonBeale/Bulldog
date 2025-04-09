@@ -1,6 +1,7 @@
 /**
  * Abstract superclass for dice implementations that keeps track of the number of sides
  * and defines the core dice functionality.
+ * @author Mason Beale with DeepSeek
  */
 public abstract class RandomDice {
     protected final int sides; // Number of sides on the dice

@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * The BulldogGUI class represents the main GUI for the Bulldog dice game.
  * It allows users to add players, start the game, and interact with the game through a graphical interface.
+ * @author Mason Beale with DeepSeek
  */
 public class Bulldog extends JFrame implements PlayerListListener {
     private static final int WINNING_SCORE = 104; // Constant for the winning score
