@@ -26,6 +26,7 @@ public class Bulldog extends JFrame implements PlayerListListener {
     private JButton returnButton;
     private Player currentPlayer;
     private int turnScore;
+    private RandomDice dice = new Dice(6);
 
     public Bulldog() {
         setTitle("Bulldog Game");
@@ -87,7 +88,7 @@ public class Bulldog extends JFrame implements PlayerListListener {
         topPanel.setBackground(new Color(173, 216, 230)); // Light blue background
 
         // Player type dropdown
-        String[] playerTypes = {"AiHumanPlayer", "AiRandomPlayer", "AiFifteenPlayer", "AiUniquePlayer", "WimpPlayer", "BoldPlayer"};
+        String[] playerTypes = {"HumanPlayer", "RandomPlayer", "FifteenPlayer", "UniquePlayer", "WimpPlayer", "BoldPlayer"};
         playerTypeComboBox = new JComboBox<>(playerTypes);
         playerTypeComboBox.setBackground(Color.WHITE);
         topPanel.add(new JLabel("Player Type:"));
@@ -244,23 +245,23 @@ public class Bulldog extends JFrame implements PlayerListListener {
 
         Player player = null;
         switch (playerType) {
-            case "AiHumanPlayer":
-                player = new HumanPlayer(playerName, this, this); // Pass 'this' as the parent frame and BulldogGUI
+            case "HumanPlayer":
+                player = new HumanPlayer(playerName, dice, this, this); // Pass 'this' as the parent frame and BulldogGUI
                 break;
-            case "AiRandomPlayer":
-                player = new RandomPlayer(playerName);
+            case "RandomPlayer":
+                player = new RandomPlayer(playerName, dice);
                 break;
-            case "AiFifteenPlayer":
-                player = new FifteenPlayer(playerName);
+            case "FifteenPlayer":
+                player = new FifteenPlayer(playerName, dice);
                 break;
-            case "AiUniquePlayer":
-                player = new UniquePlayer(playerName);
+            case "UniquePlayer":
+                player = new UniquePlayer(playerName, dice);
                 break;
             case "WimpPlayer":
-                player = new WimpPlayer(playerName);
+                player = new WimpPlayer(playerName, dice);
                 break;
             case "BoldPlayer":
-                player = new BoldPlayer(playerName, WINNING_SCORE);
+                player = new BoldPlayer(playerName, dice, WINNING_SCORE);
                 break;
         }
 
@@ -290,83 +291,69 @@ public class Bulldog extends JFrame implements PlayerListListener {
      * Starts the game and handles the game logic in a separate thread.
      */
     private void startGame() {
-        // Use a SwingWorker to run the game logic in a separate thread
+        // Set the winning score before starting the game
+        Referee.getInstance().setWinningScore(WINNING_SCORE);
+
+        // Create a SwingWorker to run the game in the background
         SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
             @Override
             protected Void doInBackground() throws Exception {
-                boolean gameOver = false;
-                while (!gameOver) {
-                    for (int i = 0; i < players.getPlayerCount(); i++) {
-                        currentPlayer = players.getPlayers().get(i);
-                        turnScore = 0;
-
-                        // Enable buttons if it's a human player's turn
-                        if (currentPlayer instanceof HumanPlayer) {
+                // Use the Referee singleton to play the game
+                Referee.getInstance().playGame(players, 
+                    new GameLogCallback() {
+                        @Override
+                        public void appendToGameLog(String message) {
+                            publish(message);
+                        }
+                    },
+                    new TurnCallback() {
+                        @Override
+                        public int handleHumanTurn(Player player) {
+                            currentPlayer = player;
+                            turnScore = 0;
+                            
+                            // Enable buttons for human player
                             SwingUtilities.invokeLater(() -> {
                                 rollButton.setEnabled(true);
                                 endButton.setEnabled(true);
                             });
-                        }
-
-                        publish("\nPlayer " + currentPlayer.getName() + "'s turn:\n");
-
-                        // Handle human player's turn
-                        if (currentPlayer instanceof HumanPlayer) {
-                            // Wait for the human player to roll or end their turn
-                            while (true) {
+                            
+                            // Wait for human to finish turn
+                            while (turnScore >= 0) {
                                 try {
                                     Thread.sleep(100);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                if (turnScore == -1) { // End turn signaled
-                                    break;
-                                }
                             }
-                            // The score has already been updated by handleEndTurn()
-                        } else {
-                            // Handle AI player's turn (existing code)
-                            int score = currentPlayer.play();
-                            players.setPlayerScore(i, players.getPlayerScore(i) + score);
-                            publish("   Scored: " + score + " this turn.\n");
-                        }
-
-                        // Disable buttons after the turn
-                        SwingUtilities.invokeLater(() -> {
-                            rollButton.setEnabled(false);
-                            endButton.setEnabled(false);
-                        });
-
-                        // Add a small pause between turns
-                        try {
-                            Thread.sleep(500); // 0.5-second pause
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (players.getPlayerScore(i) >= WINNING_SCORE) {
-                            publish("\nPlayer " + currentPlayer.getName() + " wins with a score of " + 
-                                   players.getPlayerScore(i) + "!\n");
-                            gameOver = true;
+                            
+                            // Disable buttons after turn
                             SwingUtilities.invokeLater(() -> {
-                                returnButton.setEnabled(true); // Enable the return button
+                                rollButton.setEnabled(false);
+                                endButton.setEnabled(false);
                             });
-                            break;
+                            
+                            return -turnScore - 1; // Convert the signal back to actual score
                         }
-                    }
-                }
+                        
+                        @Override
+                        public void gameEnded() {
+                            SwingUtilities.invokeLater(() -> {
+                                returnButton.setEnabled(true);
+                            });
+                        }
+                    });
                 return null;
             }
-
+            
             @Override
             protected void process(List<String> chunks) {
-                // Update the game log area in real time
                 for (String message : chunks) {
                     gameLogArea.append(message);
                 }
             }
         };
-
+        
         worker.execute();
     }
 
@@ -375,7 +362,7 @@ public class Bulldog extends JFrame implements PlayerListListener {
      */
     private void handleRoll() {
         if (currentPlayer instanceof HumanPlayer) {
-            ((HumanPlayer) currentPlayer).play(); // Delegate roll handling to AiHumanPlayer
+            ((HumanPlayer) currentPlayer).play(); // Delegate roll handling to HumanPlayer
         }
     }
 
@@ -384,12 +371,11 @@ public class Bulldog extends JFrame implements PlayerListListener {
      */
     private void handleEndTurn() {
         gameLogArea.append("   Turn ended. Scored: " + turnScore + " this turn.\n");
-        // Find the current player's index and update their score
         int playerIndex = players.getPlayers().indexOf(currentPlayer);
         if (playerIndex != -1) {
             players.setPlayerScore(playerIndex, players.getPlayerScore(playerIndex) + turnScore);
         }
-        turnScore = -1; // Signal to end the turn
+        turnScore = -turnScore - 1; // Signal end of turn with encoded score
     }
 
     /**
@@ -398,14 +384,12 @@ public class Bulldog extends JFrame implements PlayerListListener {
     private void resetGame() {
         players = new PlayerList(); // Create a new PlayerList
         players.addListener(this); // Re-register the listener
+        scoreboard.reset(players); // Reset the scoreboard with new player list
         playerPanel.removeAll();
         playerPanel.revalidate();
         playerPanel.repaint();
         gameLogArea.setText("");
-        returnButton.setEnabled(false); // Disable the return button after reset
-        
-        // Create a new scoreboard with the new player list
-        scoreboard = new Scoreboard(players);
+        returnButton.setEnabled(false);
     }
 
     /**

@@ -3,7 +3,7 @@
  * or roll a 6. If a 6 is rolled, the turn ends with a score of 0.
  */
 public class BoldPlayer extends Player {
-    private final Dice dice; // Dice object for rolling
+    private final RandomDice dice; // Dice object for rolling
     private final int winningScore; // Winning score passed from BulldogGUI
 
     /**
@@ -12,9 +12,9 @@ public class BoldPlayer extends Player {
      * @param name         The name of the player.
      * @param winningScore The winning score required to win the game.
      */
-    public BoldPlayer(String name, int winningScore) {
+    public BoldPlayer(String name, RandomDice dice, int winningScore) {
         super(name);
-        this.dice = new Dice(6); // Standard 6-sided die
+        this.dice = dice;
         this.winningScore = winningScore;
     }
 

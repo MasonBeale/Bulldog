@@ -1,23 +1,24 @@
 /**
- * The AiRandomPlayer class represents an AI player that randomly decides whether to continue rolling
- * after each roll. If the player rolls a 6, the turn ends with a score of 0.
+ * The SevenPlayer class represents an AI player that aims to reach a score of 7 in each turn.
+ * If the player rolls a 6, the turn ends with a score of 0. Otherwise, the player continues rolling
+ * until the turn score reaches at least 7.
  */
-public class RandomPlayer extends Player {
+public class SevenPlayer extends Player {
     private final RandomDice dice; // Dice object for rolling
 
     /**
-     * Constructor for the AiRandomPlayer class.
+     * Constructor for the SevenPlayer class.
      *
      * @param name The name of the player.
      */
-    public RandomPlayer(String name, RandomDice dice) {
+    public SevenPlayer(String name, RandomDice dice) {
         super(name);
         this.dice = dice;
     }
 
     /**
-     * Simulates the player's turn. The player rolls the dice and randomly decides whether to continue
-     * rolling or end the turn. If the player rolls a 6, the turn ends with a score of 0.
+     * Simulates the player's turn. The player rolls the dice and continues rolling until
+     * they either roll a 6 (ending the turn with a score of 0) or reach a turn score of at least 7.
      *
      * @return The score accumulated during the turn.
      */
@@ -33,9 +34,8 @@ public class RandomPlayer extends Player {
             } else {
                 turnScore += roll;
                 System.out.println("   Current turn score: " + turnScore);
-                boolean continueRolling = Math.random() < 0.5;
-                if (!continueRolling) {
-                    System.out.println("   Randomly chose to end turn. Score for this turn: " + turnScore);
+                if (turnScore >= 7) {
+                    System.out.println("   Reached 7 points. Ending turn. Score for this turn: " + turnScore);
                     return turnScore;
                 }
             }

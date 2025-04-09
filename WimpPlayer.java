@@ -1,9 +1,9 @@
 public class WimpPlayer extends Player {
-    private final Dice dice; // Dice object for rolling
+    private final RandomDice dice; // Dice object for rolling
 
-    public WimpPlayer(String name) {
+    public WimpPlayer(String name, RandomDice dice) {
         super(name);
-        this.dice = new Dice(6); // Standard 6-sided die
+        this.dice = dice;
     }
 
     @Override

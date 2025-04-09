@@ -1,19 +1,19 @@
 /**
- * The AiFifteenPlayer class represents an AI player that aims to reach a score of 15 in each turn.
+ * The FifteenPlayer class represents an AI player that aims to reach a score of 15 in each turn.
  * If the player rolls a 6, the turn ends with a score of 0. Otherwise, the player continues rolling
  * until the turn score reaches at least 15.
  */
 public class FifteenPlayer extends Player {
-    private final Dice dice; // Dice object for rolling
+    private final RandomDice dice; // Dice object for rolling
 
     /**
-     * Constructor for the AiFifteenPlayer class.
+     * Constructor for the FifteenPlayer class.
      *
      * @param name The name of the player.
      */
-    public FifteenPlayer(String name) {
+    public FifteenPlayer(String name, RandomDice dice) {
         super(name);
-        this.dice = new Dice(6); // Standard 6-sided die
+        this.dice = dice;
     }
 
     /**

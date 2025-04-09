@@ -5,7 +5,7 @@ import javax.swing.*;
  * This player interacts with the game through a graphical user interface (GUI).
  */
 public class HumanPlayer extends Player {
-    private final Dice dice; // Dice object for rolling
+    private final RandomDice dice; // Dice object for rolling
     private Bulldog game; // Reference to the Bulldog for updating the game state
 
     /**
@@ -15,9 +15,9 @@ public class HumanPlayer extends Player {
      * @param parentFrame The parent JFrame for the GUI.
      * @param game         The Bulldog instance for updating the game state.
      */
-    public HumanPlayer(String name, JFrame parentFrame, Bulldog game) {
+    public HumanPlayer(String name, RandomDice dice, JFrame parentFrame, Bulldog game) {
         super(name);
-        this.dice = new Dice(6); // Standard 6-sided die
+        this.dice = dice;
         this.game = game; // Initialize the reference to Bulldog
     }
 

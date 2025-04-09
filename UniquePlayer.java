@@ -3,16 +3,16 @@
  * is a multiple of 10. If the player rolls a 6, the turn ends with a score of 0.
  */
 public class UniquePlayer extends Player {
-    private final Dice dice; // Dice object for rolling
+    private final RandomDice dice; // Dice object for rolling
 
     /**
      * Constructor for the AiUniquePlayer class.
      *
      * @param name The name of the player.
      */
-    public UniquePlayer(String name) {
+    public UniquePlayer(String name, RandomDice dice) {
         super(name);
-        this.dice = new Dice(6); // Standard 6-sided die
+        this.dice = dice;
     }
 
     /**

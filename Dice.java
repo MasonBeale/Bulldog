@@ -1,29 +1,27 @@
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
  * The Dice class represents a dice with a specified number of sides.
- * It provides a method to roll the dice and generate a random number.
+ * It extends RandomDice and provides secure random number generation.
  */
-public class Dice {
-    private final int sides; // Number of sides on the dice
-    private final Random random; // Random number generator
+public class Dice extends RandomDice {
+    private static final Random random = new SecureRandom(); // Singleton Random instance
 
     /**
      * Constructor for the Dice class.
-     *
-     * @param sides The number of sides on the dice.
+     * @param sides The number of sides on the dice (must be > 1)
      */
     public Dice(int sides) {
-        this.sides = sides;
-        this.random = new Random();
+        super(sides); // Calls RandomDice constructor which validates sides > 1
     }
 
     /**
-     * Rolls the dice and returns a random number between 1 and the number of sides.
-     *
+     * Rolls the dice using secure random number generation.
      * @return A random number between 1 and the number of sides.
      */
+    @Override
     public int roll() {
-        return random.nextInt(sides) + 1; // Generates a number between 1 and sides (inclusive)
+        return random.nextInt(sides) + 1;
     }
 }
