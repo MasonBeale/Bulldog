@@ -34,16 +34,17 @@ public class Referee {
         while (!gameOver) {
             for (int i = 0; i < players.getPlayerCount(); i++) {
                 Player currentPlayer = players.getPlayers().get(i);
-                int turnScore = 0;
+                GameStatus gameStatus = new GameStatus(players, currentPlayer);
                 
                 gameLogCallback.appendToGameLog("\nPlayer " + currentPlayer.getName() + "'s turn:\n");
                 
                 if (currentPlayer instanceof HumanPlayer) {
                     // Handle human player's turn
-                    turnScore = turnCallback.handleHumanTurn(currentPlayer);
+                    int turnScore = turnCallback.handleHumanTurn(currentPlayer);
+                    players.setPlayerScore(i, players.getPlayerScore(i) + turnScore);
                 } else {
                     // Handle AI player's turn
-                    turnScore = currentPlayer.play();
+                    int turnScore = currentPlayer.play(gameStatus);
                     players.setPlayerScore(i, players.getPlayerScore(i) + turnScore);
                     gameLogCallback.appendToGameLog("   Scored: " + turnScore + " this turn.\n");
                 }
@@ -66,7 +67,7 @@ public class Referee {
     }
 }
 
-// Callback interfaces
+// Callback interfaces remain the same
 interface GameLogCallback {
     void appendToGameLog(String message);
 }

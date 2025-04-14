@@ -5,6 +5,7 @@
 public class GameStatus {
     private PlayerList players;
     private Player currentPlayer;
+    private int currentTurnScore;
     
     /**
      * Constructs a GameStatus object with the given PlayerList and current player.
@@ -33,6 +34,14 @@ public class GameStatus {
      */
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public int getCurrentTurnScore() {
+        return currentTurnScore;
+    }
+    
+    public void setCurrentTurnScore(int score) {
+        this.currentTurnScore = score;
     }
     
     /**
